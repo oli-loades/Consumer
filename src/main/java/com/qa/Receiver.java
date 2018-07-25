@@ -11,8 +11,13 @@ public class Receiver {
 	
 	@RabbitListener(queues = queueName)
 	*/
-	
+	@RabbitListener(queues="get")
     public void receiveMessage(String message) {
-        System.out.println("Received <" + message + ">");
+        System.out.println("Received <" + message + "from queue 1" + ">");
+    }
+	
+	@RabbitListener(queues="post")
+    public void receiveMessage2(String message) {
+        System.out.println("Received <" + message + "from queue 2" + ">");
     }
 }

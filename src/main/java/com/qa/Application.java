@@ -19,11 +19,18 @@ public class Application {
 
     static final String topicExchangeName = "spring-boot-exchange";
 
-    static final String queueName = "spring-boot";
+	private static final String queueGet = "get";
+	
+	private static final String queuePost = "post";
 
     @Bean
-    Queue queue() {
-        return new Queue(queueName, false);
+    Queue queueGetRequest() {
+        return new Queue(queueGet, false);
+    }
+    
+    @Bean
+    Queue queuePostRequest() {
+        return new Queue(queuePost, false);
     }
 
     @Bean
@@ -32,24 +39,13 @@ public class Application {
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+    Binding bindingGet(Queue queueGetRequest, TopicExchange exchange) {
+        return BindingBuilder.bind(queueGetRequest).to(exchange).with("get");
     }
-
+    
     @Bean
-    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-            MessageListenerAdapter listenerAdapter) {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(queueName);
-        container.setMessageListener(listenerAdapter);
-        return container;
-    }
-  
-
-    @Bean
-    MessageListenerAdapter listenerAdapter(Receiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
+    Binding bindingPost(Queue queuePostRequest, TopicExchange exchange) {
+    	return BindingBuilder.bind(queuePostRequest).to(exchange).with("post");
     }
 
     public static void main(String[] args) throws InterruptedException {
