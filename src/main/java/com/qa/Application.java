@@ -19,37 +19,22 @@ public class Application {
 
     static final String topicExchangeName = "spring-boot-exchange";
 
-	private static final String queueGet = "get";
-	
-	private static final String queuePost = "post";
+	private static final String queueName = "request";
+
 
     @Bean
-    Queue queueGetRequest() {
-        return new Queue(queueGet, false);
+    Queue queue() {
+        return new Queue(queueName, false);
     }
     
-    @Bean
-    Queue queuePostRequest() {
-        return new Queue(queuePost, false);
-    }
-
     @Bean
     TopicExchange exchange() {
         return new TopicExchange(topicExchangeName);
     }
 
     @Bean
-    Binding bindingGet(Queue queueGetRequest, TopicExchange exchange) {
-        return BindingBuilder.bind(queueGetRequest).to(exchange).with("get");
-    }
-    
-    @Bean
-    Binding bindingPost(Queue queuePostRequest, TopicExchange exchange) {
-    	return BindingBuilder.bind(queuePostRequest).to(exchange).with("post");
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        SpringApplication.run(Application.class, args);
+    Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("request");
     }
 
 }
